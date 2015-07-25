@@ -1,35 +1,64 @@
-var stage = new Kinetic.Stage({
+width = $(window).width();
+height = $(window).height();
+
+scope.stage = new Kinetic.Stage({
 	container: 'container',
-	width: 578,
-	height: 200
+	width: width,
+	height: height
 });
 
-var layer = new Kinetic.Layer();
+scope.layer = new Kinetic.Layer();
 
-var arc = new Kinetic.Arc({
-	x: 100,
-	y: 100,
+scope.arc = new Kinetic.Arc({
+	x: width/2,
+	y: height/2,
 	innerRadius: 60,
 	outerRadius: 80,
 	stroke: 'black',
 	lineCap: 'round',
 	fill: 'red',
 	strokeWidth: 1,
-	angle: 60,
-	rotationDeg: -120
+	angle: 50,
+	rotationDeg: 5
 });
 
-var rect = new Kinetic.Rect({
-	x: 100,
-	y: 100,
-	width: 100,
-	height: 50,
-	fill: 'green',
+scope.arc2 = new Kinetic.Arc({
+	x: width/2,
+	y: height/2,
+	innerRadius: 60,
+	outerRadius: 80,
 	stroke: 'black',
-	strokeWidth: 2,
-	opacity: 0.2
+	lineCap: 'round',
+	fill: 'red',
+	strokeWidth: 1,
+	angle: 50,
+	rotationDeg: 65
 });
 
-// layer.add(rect);
-layer.add(arc);
-stage.add(layer);
+scope.arc3 = new Kinetic.Arc({
+	x: width/2,
+	y: height/2,
+	innerRadius: 90,
+	outerRadius: 110,
+	stroke: 'black',
+	lineCap: 'round',
+	fill: 'green',
+	strokeWidth: 1,
+	angle: 50,
+	rotationDeg: 65
+});
+
+scope.layer.add(scope.arc);
+scope.layer.add(scope.arc2);
+scope.layer.add(scope.arc3);
+scope.stage.add(scope.layer);
+
+
+
+
+
+
+
+
+
+
