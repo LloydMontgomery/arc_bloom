@@ -7,12 +7,6 @@ var tween = new Kinetic.Tween({
 	easing: transition
 });
 
-var tween2 = new Kinetic.Tween({
-	node: scope.arc2,
-	duration: 1,
-	rotation: 180
-});
-
 var tween3 = new Kinetic.Tween({
 	node: scope.arc,
 	duration: 1,
@@ -35,7 +29,7 @@ function activate() {
 		//console.log(tween.node.attrs.rotation)
 		//tween2.reverse();
 		tween3.play();
-	}, 2000);
+	}, 1000);
 
 	setTimeout(function(){
 		tween3.destroy();
