@@ -3,7 +3,7 @@ var transition = Kinetic.Easings.StrongEaseOut
 var tween = new Kinetic.Tween({
 	node: scope.arc,
 	duration: 1,
-	rotation: 120,
+	rotation: 125,
 	easing: transition
 });
 
@@ -18,7 +18,7 @@ var tween3 = new Kinetic.Tween({
 	duration: 1,
 	innerRadius: 90,
 	outerRadius: 110,
-	angle: 60,
+	angle: 50,
 	fillRed: 255,
 	fillGreen: 0,
 	fillBlue: 0,
@@ -37,8 +37,8 @@ function activate() {
 		tween3.play();
 	}, 2000);
 
-	// setTimeout(function(){
-	// 	console.log(scope.arc.attrs)
-	// }, 3000);
+	setTimeout(function(){
+		tween3.destroy();
+	}, 3000);
 	
 }

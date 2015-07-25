@@ -14,7 +14,7 @@ scope.arc = new Kinetic.Arc({
 	y: height/2,
 	innerRadius: 60,
 	outerRadius: 80,
-	stroke: 'white',
+	stroke: 'black',
 	lineCap: 'round',
 	strokeWidth: 1,
 	angle: 50,
@@ -37,19 +37,24 @@ scope.arc2 = new Kinetic.Arc({
 	rotationDeg: 65
 });
 
-scope.arcs = []
-for (var j = 0; j < 5; j++) {
-	for (var i = 0; i < 6; i++) {
-		scope.arcs.push(new Kinetic.Arc({
+// Create the memory management system that is a 2D matrix
+scope.arcs = [];
+for (var i = 0; i < 5; i++) {
+	scope.arcs.push([]);
+	for (var j = 0; j < 6; j++) {
+		if (Math.random() < .8) {
+			continue
+		};
+		scope.arcs[i].push(new Kinetic.Arc({
 			x: width/2,
 			y: height/2,
-			innerRadius: 60 + (j*30),
-			outerRadius: 80 + (j*30),
-			stroke: 'white',
+			innerRadius: 60 + (i*30),
+			outerRadius: 80 + (i*30),
+			stroke: 'black',
 			lineCap: 'round',
 			strokeWidth: 1,
 			angle: 50,
-			rotationDeg: 5 + (60*i),
+			rotationDeg: 5 + (60*j),
 			fillRed: 0,
 			fillGreen: 0,
 			fillBlue: 255
@@ -57,7 +62,11 @@ for (var j = 0; j < 5; j++) {
 	};
 };
 for (var i = 0; i < scope.arcs.length; i++) {
-	scope.layer.add(scope.arcs[i]);
+	for (var j = 0; j < scope.arcs[i].length; j++) {
+		if (scope.arcs[i][j] != null) {
+			scope.layer.add(scope.arcs[i][j]);
+		};
+	};
 };
 
 scope.arc3 = new Kinetic.Arc({
