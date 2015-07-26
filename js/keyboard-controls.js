@@ -14,8 +14,10 @@ window.addEventListener("keydown", function(e) {
 
 		switch(e.which) {
 			case 38:  // UP Arrow Key
+				changeSelectedRing('out');
 				break
 			case 40:  // DOWN Arrow Key
+				changeSelectedRing('in');
 				break;
 			case 37:  // LEFT Arrow Key
 				rotateArcs('counterClockwise');
@@ -27,8 +29,6 @@ window.addEventListener("keydown", function(e) {
 				arcBloom();
 				break;
 		};
-		//console.log(e.which)
-		//console.log(scope.arcs);
 	};
 }, false);
 
@@ -90,7 +90,7 @@ function arcBloom() {
 													 scope.arcs[ring][seg].attrs.strokeBlue)
 			};
 		};
-		console.log(segArcColours);
+		//console.log(segArcColours);
 
 		for (let ring = segArcColours.length-1; ring > 0; ring--) {
 
@@ -99,7 +99,6 @@ function arcBloom() {
 				//console.log(segArcColours[ring] + " " + segArcColours[ring-1])
 
 				var newColour = scope.nextColour(segArcColours[ring]);
-				console.log(newColour);
 				var newRgb = scope.hexToRgb(newColour);
 				var scale = scope.scale(ring);
 
@@ -109,18 +108,21 @@ function arcBloom() {
 					duration: .5,
 					scaleX: scale,
 					scaleY: scale,
-					strokeRed: newRgb.r,
-					strokeGreen: newRgb.g,
-					strokeBlue: newRgb.b,
+					opacity: 0,
 					strokeWidth: scope.arcWidth/scale,
-					easing: transition
+					easing: transition,
+					onFinish: function() {
+						scope.arcs[ring-1][seg] = null;  // Delete this arc after it merges
+					}
 				}).play());
 
-				// Start the tween to remove one of the arcs
+				// Start the tween to change the colour
 				scope.runningTweens.push(new Kinetic.Tween({
 					node: scope.arcs[ring][seg],
 					duration: .5,
-					opacity: 0,
+					strokeRed: newRgb.r,
+					strokeGreen: newRgb.g,
+					strokeBlue: newRgb.b,
 					easing: transition
 				}).play());
 			};
@@ -165,7 +167,42 @@ function arcBloom() {
 	// };
 };
 
+function changeSelectedRing(direction) {
+	if (direction == 'out') {
+		// Change the current ring in memory
+		if (++scope.curRing == scope.nRings) {
+			scope.curRing--;
+			return;
+		}
 
+		// Change the visual cursor
+		var oldOuterRadius = scope.backgroundLayer.children[24].outerRadius();
+		scope.runningTweens.push(new Kinetic.Tween({
+			node: scope.backgroundLayer.children[24],
+			duration: .2,
+			innerRadius: oldOuterRadius,
+			outerRadius: oldOuterRadius+30,
+			easing: transition
+		}).play());
+
+	} else {  // direction == 'in'
+		// Change the current ring in memory
+		if (--scope.curRing == -1) {
+			scope.curRing++;
+			return;
+		}
+
+		// Change the visual cursor
+		var oldInnerRadius = scope.backgroundLayer.children[24].innerRadius();
+		scope.runningTweens.push(new Kinetic.Tween({
+			node: scope.backgroundLayer.children[24],
+			duration: .2,
+			innerRadius: oldInnerRadius-30,
+			outerRadius: oldInnerRadius,
+			easing: transition
+		}).play());
+	};
+};
 
 
 

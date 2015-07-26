@@ -15,23 +15,31 @@ for (var ring = 0; ring < scope.nRings; ring++) {
 			y: scope.stageCenter.y,
 			innerRadius: 55 + (scope.arcWidth+10)*ring,
 			outerRadius: 85 + (scope.arcWidth+10)*ring,
-			strokeRed:   255,
-			strokeGreen: 255,
-			strokeBlue:  255,
+			stroke: 'white',
 			lineCap: 'round',
 			lineJoin: 'round',
 			strokeWidth: 1,
 			angle: 60,
 			rotationDeg: (60*seg),
-			fillRed: 234,
-			fillGreen: 234,
-			fillBlue: 234
+			fill: '#eaeaea'
 		});
 		scope.backgroundLayer.add(temp);
 	};
 };
-scope.stage.add(scope.backgroundLayer);
 
+// Draw the currently selected row cursor
+var cursor = new Kinetic.Ring({
+	x: scope.stageCenter.x,
+	y: scope.stageCenter.y,
+	innerRadius: 55,
+	outerRadius: 85,
+	fillAlpha: 0,
+	stroke: 'black',
+	strokeWidth: 1
+});
+scope.backgroundLayer.add(cursor);
+
+scope.stage.add(scope.backgroundLayer);
 
 scope.playLayer = new Kinetic.Layer();
 

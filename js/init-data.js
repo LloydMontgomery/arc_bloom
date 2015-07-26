@@ -3,6 +3,7 @@ var sWidth = $(window).width();
 var sHeight = $(window).height();
 scope.stageCenter = { x:sWidth/2, y:sHeight/2 };
 
+
 /** Game Difficulty Variables **/
 scope.nRings = 4;
 scope.nSegs = 6;
