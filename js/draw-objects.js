@@ -50,7 +50,11 @@ for (let i = 0; i < 4; i++) {
 	scope.arcs[0][sPos[i]] = (new Kinetic.Shape({
 		x: scope.stageCenter.x,
 		y: scope.stageCenter.y,
-		stroke: 'green',
+		scaleX: 1,
+		scaleY: 1,
+		strokeRed: 153,
+		strokeGreen: 194,
+		strokeBlue: 153,
 		strokeWidth: scope.arcWidth,
 		lineCap: 'round',
 		sceneFunc: function(context) {
@@ -60,10 +64,31 @@ for (let i = 0; i < 4; i++) {
 			context.beginPath();
 			context.arc(0, 0, radius, startAngle, endAngle, false);
 			context.fillStrokeShape(this);
-		},   
+		},
 	}));
 	scope.playLayer.add(scope.arcs[0][sPos[i]]);
 };
+
+scope.arcs[1][3] = (new Kinetic.Shape({
+	x: scope.stageCenter.x,
+	y: scope.stageCenter.y,
+	scaleX: 1,
+	scaleY: 1,
+	strokeRed: 153,
+	strokeGreen: 194,
+	strokeBlue: 153,
+	strokeWidth: scope.arcWidth,
+	lineCap: 'round',
+	sceneFunc: function(context) {
+		var radius = 70*1.429;
+		var startAngle = (10+(60*3))*(Math.PI/180);
+		var endAngle =  (50+(60*3))*(Math.PI/180);
+		context.beginPath();
+		context.arc(0, 0, radius, startAngle, endAngle, false);
+		context.fillStrokeShape(this);
+	},
+}));
+scope.playLayer.add(scope.arcs[1][3]);
 
 console.log(scope.arcs);
 

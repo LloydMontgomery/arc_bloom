@@ -15,6 +15,8 @@ scope.stage = new Kinetic.Stage({
 	width: sWidth,
 	height: sHeight
 });
+scope.greenSpec = ['#99C299', '#4D944D', '#006600', '#004700', '#002900']
+
 
 /** Keyboard Controls Data **/
 scope.curRing = 0;  // The currently selected ring, the one the user can spin

@@ -1,0 +1,5 @@
+Green 1: #99C299
+Green 2: #4D944D
+Green 3: #006600
+Green 4: #006600
+Green 5: #002900
