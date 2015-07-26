@@ -10,7 +10,23 @@ window.addEventListener("keydown", function(e) {
         	case 37:  // LEFT Arrow Key
         		break;
         	case 39:  // RIGHT Arrow Key
+        		rotateClockwise();
         }
         console.log(e.which)
     }
 }, false);
+
+function rotateClockwise() {
+	for (var seg = 0; seg < 6; seg++) {
+		// if (true) {
+		// 	pass
+		// };
+		// new Kinetic.Tween({
+		// 	node: scope.arcs[scope.curRing][seg],
+		// 	duration: 1,
+		// 	rotation: 120,
+		// 	easing: transition
+		// }).play();
+	};
+	
+}

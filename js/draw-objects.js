@@ -38,7 +38,7 @@ scope.playLayer = new Kinetic.Layer();
 /** Create the memory management system that is a 2D matrix **/
 
 // Find the starting positions at random, check for duplicates
-var sPos = []
+var sPos = []  // Starting position array
 for (var i = 0; i < 4; i++) {
 	do { var pos = Math.floor(Math.random() * 6) + 1; }
 	while(sPos.indexOf(pos) > -1);
@@ -47,7 +47,7 @@ for (var i = 0; i < 4; i++) {
 
 // Create the initial X objects to be displayed on the screen
 for (let i = 0; i < 4; i++) {
-	scope.arcs.push(new Kinetic.Shape({
+	scope.arcs[0][sPos[i]] = (new Kinetic.Shape({
 		x: scope.stageCenter.x,
 		y: scope.stageCenter.y,
 		stroke: 'green',
@@ -62,11 +62,10 @@ for (let i = 0; i < 4; i++) {
 			context.fillStrokeShape(this);
 		},   
 	}));
-	scope.playLayer.add(scope.arcs[i]);
-	scope.arcPos[0][sPos[i]] = i;
+	scope.playLayer.add(scope.arcs[0][sPos[i]]);
 };
 
-console.log(scope.arcPos);
+console.log(scope.arcs);
 
 // for (var i = 0; i < 5; i++) {
 // 	scope.arcs.push([]);
@@ -98,20 +97,20 @@ console.log(scope.arcPos);
 // 	};
 // };
 
-scope.arc = new Kinetic.Arc({
-	x: sWidth/2,
-	y: sHeight/2,
-	innerRadius: 60,
-	outerRadius: 80,
-	stroke: 'black',
-	lineCap: 'round',
-	strokeWidth: 1,
-	angle: 50,
-	rotationDeg: 4,
-	fillRed: 0,
-	fillGreen: 0,
-	fillBlue: 255
-});
+// scope.arc = new Kinetic.Arc({
+// 	x: sWidth/2,
+// 	y: sHeight/2,
+// 	innerRadius: 60,
+// 	outerRadius: 80,
+// 	stroke: 'black',
+// 	lineCap: 'round',
+// 	strokeWidth: 1,
+// 	angle: 50,
+// 	rotationDeg: 4,
+// 	fillRed: 0,
+// 	fillGreen: 0,
+// 	fillBlue: 255
+// });
 
 // scope.layer.add(scope.arc);
 
