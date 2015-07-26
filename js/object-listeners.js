@@ -17,7 +17,7 @@ var transition = Kinetic.Easings.StrongEaseOut
 // });
 
 function activate() {
-	console.log("Activate")
+	//console.log("Activate")
 
 	// Highlight the currently selected pieces
 	// for (var i = 0; i < scope.arcPos[0].length; i++) {

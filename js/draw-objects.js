@@ -40,7 +40,7 @@ scope.playLayer = new Kinetic.Layer();
 // Find the starting positions at random, check for duplicates
 var sPos = []  // Starting position array
 for (var i = 0; i < 4; i++) {
-	do { var pos = Math.floor(Math.random() * 6) + 1; }
+	do { var pos = Math.floor(Math.random() * 5); }
 	while(sPos.indexOf(pos) > -1);
 	sPos.push(pos);
 };
@@ -67,80 +67,8 @@ for (let i = 0; i < 4; i++) {
 
 console.log(scope.arcs);
 
-// for (var i = 0; i < 5; i++) {
-// 	scope.arcs.push([]);
-// 	for (var j = 0; j < 6; j++) {
-// 		if (Math.random() < .8) {
-// 			continue
-// 		};
-// 		scope.arcs[i].push(new Kinetic.Arc({
-// 			x: sWidth/2,
-// 			y: sHeight/2,
-// 			innerRadius: 60 + (i*30),
-// 			outerRadius: 80 + (i*30),
-// 			// stroke: 'black',
-// 			lineCap: 'round',
-// 			// strokeWidth: 1,
-// 			angle: 50,
-// 			rotationDeg: 5 + (60*j),
-// 			fillRed: 0,
-// 			fillGreen: 0,
-// 			fillBlue: 255
-// 		}));
-// 	};
-// };
-// for (var i = 0; i < scope.arcs.length; i++) {
-// 	for (var j = 0; j < scope.arcs[i].length; j++) {
-// 		if (scope.arcs[i][j] != null) {
-// 			scope.layer.add(scope.arcs[i][j]);
-// 		};
-// 	};
-// };
-
-// scope.arc = new Kinetic.Arc({
-// 	x: sWidth/2,
-// 	y: sHeight/2,
-// 	innerRadius: 60,
-// 	outerRadius: 80,
-// 	stroke: 'black',
-// 	lineCap: 'round',
-// 	strokeWidth: 1,
-// 	angle: 50,
-// 	rotationDeg: 4,
-// 	fillRed: 0,
-// 	fillGreen: 0,
-// 	fillBlue: 255
-// });
-
-// scope.layer.add(scope.arc);
-
 scope.stage.add(scope.playLayer);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// scope.backgroundLayer.add(new Kinetic.Line({
-// 	points: [200,200,300,300],
-// 	stroke: 'black',
-// 	lineCap: 'round',
-// 	strokeWidth: 20,
-// 	fill: 'black'
-// }));
 
 
 

@@ -21,4 +21,8 @@ scope.curRing = 0;  // The currently selected ring, the one the user can spin
 
 
 /** Game Memory Variables **/
+// All arcs on screen are stored here. Position in the array is relative to the position on the screen
 scope.arcs = []; while(scope.arcs.push(new Array(scope.nSegs)) < scope.nRings);  // Indexes of arc positions to scope.arcs
+
+scope.runningTweens = [];
+
