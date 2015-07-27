@@ -40,6 +40,7 @@ function rotateArcs(direction) {
 
 			// Grab the previous rotation of the arc
 			var lastRotation = scope.arcs[scope.curRing][seg].attrs.rotation;
+
 			// It could be 'undefined' so check and convert to 0
 			if (lastRotation == null) {lastRotation = 0}
 
@@ -81,82 +82,45 @@ function arcBloom() {
 
 		/** Check all rings in a segment for bloom-movement decision & build information **/
 		var arcBloomSegInfo = buildArcBloomSegInfo(seg);
-		break;
 
-		// for (var ring = scope.nRings-1; ring >= 0; ring--) {
-		// 	if (scope.arcs[ring][seg] != null) {
-		// 		for (var ring2 = scope.nRings-2; ring2 >= 0; ring2--) {
+		// Now that we have the bloom information, execute it as tweens
+		for (let ring = arcBloomSegInfo.length-1; ring >= 0 ; ring--) {
+			if (arcBloomSegInfo[ring]['node'] == null)
+				continue
 
-		// 		};
-		// 	}
-		// };
+			var scale = scope.scale(arcBloomSegInfo[ring]['moveTo']);
+			var opacity = arcBloomSegInfo[ring]['opacity'];
+			var newRgb = scope.hexToRgb(arcBloomSegInfo[ring]['colour']);
 
-		// // Grab all of the current arc colours in a segment
-		// var segArcColours = new Array(scope.nRings);
-		// for (var ring = 0; ring < scope.nRings; ring++) {
-		// 	if (scope.arcs[ring][seg] != null) {
-		// 		segArcColours[ring] = scope.rgbToHex(scope.arcs[ring][seg].attrs.strokeRed,
-		// 											 scope.arcs[ring][seg].attrs.strokeGreen,
-		// 											 scope.arcs[ring][seg].attrs.strokeBlue)
-		// 	};
-		// };
-		// console.log(segArcColours);
+			var newRing = ring;
+			if (scope.arcs[ring][seg].scaleX() != scale) {
+				newRing = arcBloomSegInfo[ring]['moveTo']
+				scope.arcs[newRing][seg] = scope.arcs[ring][seg];
+				scope.arcs[ring][seg] = null;
+			};
 
-		// for (let ring = segArcColours.length-1; ring > 0; ring--) {
-
-		// 	// Check if two arcs need to merge & increase colour
-		// 	if (segArcColours[ring] != null && segArcColours[ring] == segArcColours[ring-1]) {
-		// 		console.log(segArcColours[ring] + " " + segArcColours[ring-1])
-
-		// 		var newColour = scope.nextColour(segArcColours[ring]);
-		// 		var newRgb = scope.hexToRgb(newColour);
-		// 		var scale = scope.scale(ring);
-
-		// 		// Start the tween to merge the arcs
-		// 		scope.runningTweens.push(new Kinetic.Tween({
-		// 			node: scope.arcs[ring-1][seg],
-		// 			duration: .5,
-		// 			scaleX: scale,
-		// 			scaleY: scale,
-		// 			opacity: 0,
-		// 			strokeWidth: scope.arcWidth/scale,
-		// 			easing: transition,
-		// 			onFinish: function() {
-		// 				scope.arcs[ring-1][seg] = null;  // Delete this arc after it merges
-		// 			}
-		// 		}).play());
-
-		// 		// Start the tween to change the colour
-		// 		scope.runningTweens.push(new Kinetic.Tween({
-		// 			node: scope.arcs[ring][seg],
-		// 			duration: .5,
-		// 			strokeRed: newRgb.r,
-		// 			strokeGreen: newRgb.g,
-		// 			strokeBlue: newRgb.b,
-		// 			easing: transition
-		// 		}).play());
-		// 	};
-			
-		// };
-		
-
-
-		// 	scope.runningTweens.push(new Kinetic.Tween({
-		// 		node: scope.arcs[scope.curRing][seg],
-		// 		duration: .5,
-		// 		scaleX: newScale,
-		// 		scaleY: newScale,
-		// 		strokeWidth: scope.arcWidth/newScale,
-		// 		easing: transition
-		// 	}).play());
-		// };
+			// Update arc memory if the arc moves rings
+			scope.runningTweens.push(new Kinetic.Tween({
+				node: scope.arcs[newRing][seg],
+				duration: .5,
+				scaleX: scale,
+				scaleY: scale,
+				strokeRed: newRgb.r,
+				strokeGreen: newRgb.g,
+				strokeBlue: newRgb.b,
+				opacity: opacity,
+				strokeWidth: scope.arcWidth/scale,
+				easing: transition
+			}).play());
+		};
 	};
-
-	// Update arc memory
-	// for (var i = 0; i < Things.length; i++) {
-	// 	Things[i]
-	// };
+	
 };
+
+function showArcMemory() {
+	// console.log(scope.arcs);
+}
+
 
 function buildArcBloomSegInfo(seg) {
 
@@ -175,7 +139,6 @@ function buildArcBloomSegInfo(seg) {
 												 scope.arcs[ring][seg].attrs.strokeBlue);
 		};
 	};
-	console.log(segArcColours);
 
 	// Combine & move all possible arcs in the set
 	for (var ring = segArcColours.length-1; ring > 0; ring--) {
@@ -224,7 +187,6 @@ function buildArcBloomSegInfo(seg) {
 							var nodePos = nodePosInDictList(segArcColours[ring2]['node'], arcBloomSegInfo);
 							if (nodePos == -1)  // If it's not already in the list . . .
 								nodePos = ring2;  // Just use the position given
-							console.log("C3 " + nodePos)
 
 							// Move the arc
 							if(!arcBloomSegInfo[nodePos].hasOwnProperty('node'))
@@ -256,8 +218,6 @@ function buildArcBloomSegInfo(seg) {
 					arcBloomSegInfo[nodePos]['moveTo'] = ring;
 					arcBloomSegInfo[nodePos]['colour'] = segArcColours[ring2]['colour'];
 
-					//console.log(arcBloomSegInfo[nodePos]);
-
 					// Reflect these changes in our temp segment
 					segArcColours[ring] = segArcColours[ring2];
 					segArcColours[ring2] = { colour:'', node:null};
@@ -268,39 +228,23 @@ function buildArcBloomSegInfo(seg) {
 			};
 		};
 	};
-	console.log(arcBloomSegInfo);
 
+	return arcBloomSegInfo;
+};
 
-
-	// for (var i = 0; i < segArcColours.length-1; i++) {
-	// 	if (segArcColours[i] == segArcColours[i+1]) {
-	// 		// Overwrite the colour with the new 'combined' one
-	// 		segArcColours[i] = scope.nextColour(segArcColours[i]);
-	// 		// Overwrite the now gone 
-	// 		segArcColours[i+1] = null;
-
-	// 		// Shift all of the other colours over
-	// 		for (var j = i+1; j < segArcColours.length-1; j++) {
-	// 			segArcColours[j] = segArcColours[j+1];
-	// 		};
-	// 	}
-	// };
-	// console.log(segArcColours);
-
-	// return arcBloomSegInfo;
-}
 
 function nodePosInDictList(node, list) {
 	if (node == null) {
 		console.log("null node");
 		return -1;
-	}
+	};
 	for (var i = 0; i < list.length; i++) {
 		if (list[i]['node'] == node)
 			return i;
 	};
 	return -1;
-}
+};
+
 
 function changeSelectedRing(direction) {
 	if (direction == 'out') {
