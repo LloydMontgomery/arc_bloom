@@ -114,7 +114,21 @@ function arcBloom() {
 			}).play());
 		};
 	};
-	
+
+	// Check how many arcs it is possible to spawn in
+	var spawnableSpaces = new Array(scope.nSegs);
+	var gameOver = true;
+	for (var seg = 0; seg < scope.nSegs; seg++) {
+		if (scope.arcs[0][seg] != null)
+			spawnableSpaces[seg] = 0;
+		else {
+			spawnableSpaces[seg] = 1;
+			gameOver = false;
+		}
+	};
+	if (gameOver)
+		alert("Game Over - Try Again")
+	scope.spawnArcs(spawnableSpaces);
 };
 
 function showArcMemory() {

@@ -43,40 +43,53 @@ scope.stage.add(scope.backgroundLayer);
 
 scope.playLayer = new Kinetic.Layer();
 
-/** Create the memory management system that is a 2D matrix **/
+scope.spawnArcs = function(spawnableSpaces) {
 
-// Find the starting positions at random, check for duplicates
-var sPos = []  // Starting position array
-for (var i = 0; i < 4; i++) {
-	do { var pos = Math.floor(Math.random() * 5); }
-	while(sPos.indexOf(pos) > -1);
-	sPos.push(pos);
-};
+	// Randomly decide how many new pieces to spawn in
+	var newArcs = Math.floor(Math.random() * 2) + 2;
+	
+	var sPos = []  // Starting position array
+	for (var i = 0; i < spawnableSpaces.length; i++)
+		if (spawnableSpaces[i] == 1)
+			if (Math.random() > .6)
+				sPos.push(i);
+	// There should be at least one spawning every time
+	if (sPos.length == 0) {
+		for (var i = 0; i < spawnableSpaces.length; i++) {
+			sPos.push(i);
+			break;
+		};
+	};
 
-// Create the initial X objects to be displayed on the screen
-for (let i = 0; i < 4; i++) {
-	scope.arcs[0][sPos[i]] = (new Kinetic.Shape({
-		x: scope.stageCenter.x,
-		y: scope.stageCenter.y,
-		scaleX: 1,
-		scaleY: 1,
-		rotation: 0,
-		strokeRed: 153,
-		strokeGreen: 194,
-		strokeBlue: 153,
-		strokeWidth: scope.arcWidth,
-		lineCap: 'round',
-		sceneFunc: function(context) {
-			var radius = 70;
-			var startAngle = (10+(60*sPos[i]))*(Math.PI/180);
-			var endAngle =  (50+(60*sPos[i]))*(Math.PI/180);
-			context.beginPath();
-			context.arc(0, 0, radius, startAngle, endAngle, false);
-			context.fillStrokeShape(this);
-		},
-	}));
-	scope.playLayer.add(scope.arcs[0][sPos[i]]);
+	// Create the initial X objects to be displayed on the screen
+	for (let i = 0; i < sPos.length; i++) {
+		scope.arcs[0][sPos[i]] = (new Kinetic.Shape({
+			x: scope.stageCenter.x,
+			y: scope.stageCenter.y,
+			scaleX: 1,
+			scaleY: 1,
+			rotation: 0,
+			strokeRed: 153,
+			strokeGreen: 194,
+			strokeBlue: 153,
+			strokeWidth: scope.arcWidth,
+			lineCap: 'round',
+			sceneFunc: function(context) {
+				var radius = 70;
+				var startAngle = (10+(60*sPos[i]))*(Math.PI/180);
+				var endAngle =  (50+(60*sPos[i]))*(Math.PI/180);
+				context.beginPath();
+				context.arc(0, 0, radius, startAngle, endAngle, false);
+				context.fillStrokeShape(this);
+			},
+		}));
+		scope.playLayer.add(scope.arcs[0][sPos[i]]);
+	};
 };
+var spawnableSpaces = [];
+var arraySize = scope.nSegs; while(arraySize--) spawnableSpaces.push(1);
+scope.spawnArcs(spawnableSpaces);
+
 
 // scope.arcs[1][0] = (new Kinetic.Shape({
 // 	x: scope.stageCenter.x,
