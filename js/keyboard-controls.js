@@ -83,6 +83,37 @@ function arcBloom() {
 		/** Check all rings in a segment for bloom-movement decision & build information **/
 		var arcBloomSegInfo = buildArcBloomSegInfo(seg);
 
+		// Check how many max darkness arcs are on the outsite edge
+		var count = 0;
+		console.log(arcBloomSegInfo);
+		for (var ring = 0; ring < scope.nRings; ring++) {
+			for (var seg = 0; seg < scope.nSegs; seg++) {
+				if (arcBloomSegInfo[ring][seg] == null)
+					break;  // If we found anything else, just leave
+				if (arcBloomSegInfo[ring][seg]['colour'] == "#002900")
+					count++;
+				else
+					break;  // If we found anything else, just leave
+			};
+		};
+		// If the entire outside ring is complete, we need to increase the scale to move them all
+		if (count == scope.nSegs) {
+			console.log("Winning!")
+			for (var ring = 0; ring < scope.nRings-1; ring++) {  // All but the last ring
+				for (var seg = 0; seg < scope.nSegs; seg++) {
+					if (arcBloomSegInfo[ring][seg] != null)
+						arcBloomSegInfo[ring][seg]['moveTo']++;
+				};
+			};
+
+			for (let ring = 0; ring < scope.nRings; ring++) {
+				arcBloomSegInfo[nodePos]['opacity'] = 1;
+				arcBloomSegInfo[nodePos1]['duration'] = .5;
+				arcBloomSegInfo[nodePos]['moveTo'] = ring;
+				arcBloomSegInfo[nodePos]['colour'] = segArcColours[ring2]['colour'];
+			};
+		};
+
 		// Now that we have the bloom information, execute it as tweens
 		for (let ring = arcBloomSegInfo.length-1; ring >= 0 ; ring--) {
 			if (arcBloomSegInfo[ring]['node'] == null)
@@ -115,6 +146,32 @@ function arcBloom() {
 		};
 	};
 
+	// Check for a complete outer ring of dark colours
+	// var count = 0;
+	// for (var seg = 0; seg < scope.nSegs; seg++) {
+	// 	if (scope.arcs[scope.nRings-1][seg] == null)  // If there is nothing here
+	// 		break;  // Exit immediately, there is not a complete ring
+	// 	if (scope.arcs[scope.nRings-1][seg].strokeRed() == 0 && 
+	// 		scope.arcs[scope.nRings-1][seg].strokeGreen() == 41 &&
+	// 		scope.arcs[scope.nRings-1][seg].strokeBlue() == 0) {
+	// 		count++;
+	// 	};
+	// };
+	// if (count == 6) {
+	// 	console.log("Winning!")
+	// 	for (let seg = 0; ring < scope.nSegs; seg++) {
+	// 		new Kinetic.Tween({
+	// 			node: scope.arcs[scope.nRings-1][seg],
+	// 			duration: 2,
+	// 			scaleX: 4,
+	// 			scaleY: 4,
+	// 			opacity: 0,
+	// 			easing: transition
+	// 		}).play();
+	// 		scope.arcs[scope.nRings-1][seg] = null;
+	// 	};
+	// };
+
 	// Check how many arcs it is possible to spawn in
 	var spawnableSpaces = new Array(scope.nSegs);
 	var gameOver = true;
@@ -132,7 +189,7 @@ function arcBloom() {
 };
 
 function showArcMemory() {
-	// console.log(scope.arcs);
+	console.log(scope.arcs);
 }
 
 
@@ -174,6 +231,7 @@ function buildArcBloomSegInfo(seg) {
 						if(!arcBloomSegInfo[nodePos1].hasOwnProperty('node'))
 							arcBloomSegInfo[nodePos1]['node'] = scope.arcs[ring2][seg];
 						arcBloomSegInfo[nodePos1]['opacity'] = 1;
+						arcBloomSegInfo[nodePos1]['duration'] = .5;
 						arcBloomSegInfo[nodePos1]['moveTo'] = ring;
 						arcBloomSegInfo[nodePos1]['colour'] = scope.nextColour(segArcColours[ring]['colour']);
 
@@ -185,11 +243,12 @@ function buildArcBloomSegInfo(seg) {
 						if(!arcBloomSegInfo[nodePos2].hasOwnProperty('node'))
 							arcBloomSegInfo[nodePos2]['node'] = scope.arcs[ring][seg];
 						arcBloomSegInfo[nodePos2]['opacity'] = 0;
+						arcBloomSegInfo[nodePos2]['duration'] = .5;
 						arcBloomSegInfo[nodePos2]['moveTo'] = ring;
 						arcBloomSegInfo[nodePos2]['colour'] = segArcColours[ring]['colour'];
 
 						// Reflect these changes in our temp segment
-						segArcColours[ring] = scope.nextColour(segArcColours[ring]['colour']);
+						segArcColours[ring] = { colour:scope.nextColour(segArcColours[ring]['colour']), node:scope.arcs[ring][seg]};
 						segArcColours[ring2] = { colour:'', node:null};
 
 						break;  // Stop looking for arcs, we only needed one
@@ -206,6 +265,7 @@ function buildArcBloomSegInfo(seg) {
 							if(!arcBloomSegInfo[nodePos].hasOwnProperty('node'))
 								arcBloomSegInfo[nodePos]['node'] = scope.arcs[ring2][seg];
 							arcBloomSegInfo[nodePos]['opacity'] = 1;
+							arcBloomSegInfo[nodePos]['duration'] = .5;
 							arcBloomSegInfo[nodePos]['moveTo'] = (ring-1);
 							arcBloomSegInfo[nodePos]['colour'] = segArcColours[ring2]['colour'];
 						}
@@ -229,11 +289,12 @@ function buildArcBloomSegInfo(seg) {
 					if(!arcBloomSegInfo[nodePos].hasOwnProperty('node'))  // We only need to set this once
 						arcBloomSegInfo[nodePos]['node'] = scope.arcs[ring2][seg];
 					arcBloomSegInfo[nodePos]['opacity'] = 1;
+					arcBloomSegInfo[nodePos]['duration'] = .5;
 					arcBloomSegInfo[nodePos]['moveTo'] = ring;
 					arcBloomSegInfo[nodePos]['colour'] = segArcColours[ring2]['colour'];
 
 					// Reflect these changes in our temp segment
-					segArcColours[ring] = segArcColours[ring2];
+					segArcColours[ring] = segArcColours[nodePos];
 					segArcColours[ring2] = { colour:'', node:null};
 
 					ring++;  // We want to relook at this arc since it may need to be merged with another arc

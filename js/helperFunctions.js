@@ -26,6 +26,8 @@ scope.scale = function(ring) {
 			return 1.857;
 		case 3:
 			return 2.286;
+		case 4:
+			return 4;  // This is the burst scale
 	};
 };
 

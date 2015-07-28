@@ -56,22 +56,33 @@ scope.spawnArcs = function(spawnableSpaces) {
 	// There should be at least one spawning every time
 	if (sPos.length == 0) {
 		for (var i = 0; i < spawnableSpaces.length; i++) {
-			sPos.push(i);
-			break;
+			if (spawnableSpaces[i] == 1) {
+				sPos.push(i);
+				break;
+			};
 		};
 	};
 
 	// Create the initial X objects to be displayed on the screen
 	for (let i = 0; i < sPos.length; i++) {
+
+		// Generate a new colour for each arc
+		if (Math.floor(Math.random() * 2)) {
+			var colour = {r:153, g:194, b:153};  // #99C299
+		} else {
+			var colour = {r:77, g:148, b:77};  // #4d944d
+		};
+		var colour = {r:77, g:148, b:77};  // #4d944d
+
 		scope.arcs[0][sPos[i]] = (new Kinetic.Shape({
 			x: scope.stageCenter.x,
 			y: scope.stageCenter.y,
 			scaleX: 1,
 			scaleY: 1,
 			rotation: 0,
-			strokeRed: 153,
-			strokeGreen: 194,
-			strokeBlue: 153,
+			strokeRed: colour.r,
+			strokeGreen: colour.g,
+			strokeBlue: colour.b,
 			strokeWidth: scope.arcWidth,
 			lineCap: 'round',
 			sceneFunc: function(context) {
