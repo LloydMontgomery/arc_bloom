@@ -5,20 +5,27 @@
 	<script type="text/javascript"> var scope = {}; </script>
 
 	<!-- External JS Libraries -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.js"></script>
-	<script src="./js/kinetic-v5.1.0.js"></script>
+	<script src="./js/external/jquery-2.1.4.min.js"></script>
+	<script src="./js/external/kinetic-v5.1.0.js"></script>
 
 	<!-- JS Files -->
 	<script src="./js/init-data.js" defer></script>
 	<script src="./js/helperFunctions.js" defer></script>
 	<script src="./js/draw-objects.js" defer></script>
-	<script src="./js/object-listeners.js" defer></script>
 	<script src="./js/keyboard-controls.js" defer></script>
+
+	<!-- CSS Files -->
+	<link rel="stylesheet" type="text/css" href="./css/index.css">
 
 </head>
 <body>
 
-	<div onclick="showArcMemory()" id="container"></div>
+	<!-- Board Row -->
+	<div class="col-lg-4"> </div>
+	<div onclick="showArcMemory()" id="container" class="col-lg-4"></div>
+	<div class="col-lg-4"> </div>
+	<!-- End Board Row -->
+
 
 	
 	

@@ -43,6 +43,18 @@ scope.stage.add(scope.backgroundLayer);
 
 scope.playLayer = new Kinetic.Layer();
 
+scope.counter = new Kinetic.Text({
+  x: scope.stageCenter.x-25,
+  y: scope.stageCenter.y-40,
+  text: scope.nSpinsLeft,
+  opacity: .6,
+  fontSize: 80,
+  fontFamily: 'Courier',
+  fill: 'green'
+});
+scope.playLayer.add(scope.counter)
+
+
 scope.spawnArcs = function(spawnableSpaces) {
 
 	// Randomly decide how many new pieces to spawn in
@@ -72,7 +84,7 @@ scope.spawnArcs = function(spawnableSpaces) {
 		} else {
 			var colour = {r:77, g:148, b:77};  // #4d944d
 		};
-		var colour = {r:77, g:148, b:77};  // #4d944d
+		// var colour = {r:77, g:148, b:77};  // #4d944d
 
 		scope.arcs[0][sPos[i]] = (new Kinetic.Shape({
 			x: scope.stageCenter.x,

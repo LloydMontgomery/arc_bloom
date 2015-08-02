@@ -54,7 +54,7 @@ function rotateArcs(direction) {
 				node: scope.arcs[scope.curRing][seg],
 				duration: .5,
 				rotation: newRotation,
-				easing: transition,
+				easing: scope.transition,
 				onFinish: function() {
 					this.destroy();
 				}
@@ -76,9 +76,16 @@ function rotateArcs(direction) {
 		};
 		scope.arcs[scope.curRing][scope.nSegs-1] = save;  // Put the last arc in position 1
 	};
+
+	if (--scope.nSpinsLeft == 0)
+		arcBloom()
+	scope.counter.text(scope.nSpinsLeft)
 };
 
 function arcBloom() {
+
+	scope.nSpinsLeft = 3
+	scope.counter.text(scope.nSpinsLeft)
 
 	// Check how many max darkness arcs are on the outsite edge
 	var count = 0;
@@ -104,7 +111,7 @@ function arcBloom() {
 				scaleX: 4,
 				scaleY: 4,
 				opacity: 0,
-				easing: transition,
+				easing: scope.transition,
 				onFinish: function() {
 					this.node.destroy();  // Destroy the arc on the layer
 					this.destroy();  // Destroy the tween
@@ -155,7 +162,7 @@ function arcBloom() {
 				strokeBlue: newRgb.b,
 				opacity: opacity,
 				strokeWidth: scope.arcWidth/scale,
-				easing: transition,
+				easing: scope.transition,
 				onFinish: function() {
 					if (this.node.opacity() == 0)
 						this.node.destroy();  // Destroy the arc on the layer
@@ -331,7 +338,7 @@ function changeSelectedRing(direction) {
 			duration: .2,
 			innerRadius: oldOuterRadius,
 			outerRadius: oldOuterRadius+30,
-			easing: transition
+			easing: scope.transition
 		}).play());
 
 	} else {  // direction == 'in'
@@ -348,7 +355,7 @@ function changeSelectedRing(direction) {
 			duration: .2,
 			innerRadius: oldInnerRadius-30,
 			outerRadius: oldInnerRadius,
-			easing: transition
+			easing: scope.transition
 		}).play());
 	};
 };
