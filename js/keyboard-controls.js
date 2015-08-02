@@ -142,6 +142,7 @@ function arcBloom() {
 
 			var scale = scope.scale(arcBloomInfo[seg][ring]['moveTo']);
 			var opacity = arcBloomInfo[seg][ring]['opacity'];
+			//console.log (arcBloomInfo);
 			var newRgb = scope.hexToRgb(arcBloomInfo[seg][ring]['colour']);
 
 			// Update arc memory if the arc moves rings
@@ -222,7 +223,14 @@ function buildArcBloomSegInfo(seg) {
 
 				if (segArcColours[ring2]['node'] != null) {  // Then we have found another arc, stop here
 
-					if (segArcColours[ring]['colour'] == segArcColours[ring2]['colour']) {  // If it is the same colour
+					// if ((segArcColours[ring]['colour'] == segArcColours[ring2]['colour']) || 
+					// 	(segArcColours[ring]['colour'] == scope.redSpec[2] && segArcColours[ring2]['colour'] == scope.blueSpec[2])
+					// 	(segArcColours[ring]['colour'] == scope.blueSpec[2] && segArcColours[ring2]['colour'] == scope.redSpec[2])) 
+
+					var newColour = scope.newColour(segArcColours[ring]['colour'], segArcColours[ring2]['colour']);
+
+					// if (segArcColours[ring]['colour'] == segArcColours[ring2]['colour']) {  // If it is the same colour
+					if (newColour != null) {  // If it is the same colour
 
 						var nodePos1 = nodePosInDictList(segArcColours[ring2]['node'], arcBloomSegInfo);
 						if (nodePos1 == -1)  // If it's not already in the list . . .
@@ -234,7 +242,10 @@ function buildArcBloomSegInfo(seg) {
 						arcBloomSegInfo[nodePos1]['opacity'] = 1;
 						arcBloomSegInfo[nodePos1]['duration'] = .5;
 						arcBloomSegInfo[nodePos1]['moveTo'] = ring;
-						arcBloomSegInfo[nodePos1]['colour'] = scope.nextColour(segArcColours[ring]['colour']);
+						// arcBloomSegInfo[nodePos1]['colour'] = scope.newColour(segArcColours[ring]['colour'], segArcColours[ring2]['colour']);
+						arcBloomSegInfo[nodePos1]['colour'] = newColour;
+
+						console.log(scope.newColour(segArcColours[ring]['colour'], segArcColours[ring2]['colour']));
 
 						var nodePos2 = nodePosInDictList(segArcColours[ring]['node'], arcBloomSegInfo);
 						if (nodePos2 == -1)  // If it's not already in the list . . .
@@ -249,7 +260,7 @@ function buildArcBloomSegInfo(seg) {
 						arcBloomSegInfo[nodePos2]['colour'] = segArcColours[ring]['colour'];
 
 						// Reflect these changes in our temp segment
-						segArcColours[ring] = { colour:scope.nextColour(segArcColours[ring]['colour']), node:scope.arcs[ring][seg]};
+						segArcColours[ring] = { colour:newColour, node:scope.arcs[ring][seg]};
 						segArcColours[ring2] = { colour:'', node:null};
 
 						break;  // Stop looking for arcs, we only needed one
@@ -362,7 +373,9 @@ function changeSelectedRing(direction) {
 
 
 
-
+scope.showArcMemory = function() {
+	// console.log()
+}
 
 
 

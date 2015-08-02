@@ -50,7 +50,7 @@ scope.counter = new Kinetic.Text({
   opacity: .6,
   fontSize: 80,
   fontFamily: 'Courier',
-  fill: 'green'
+  fill: 'black'
 });
 scope.playLayer.add(scope.counter)
 
@@ -80,11 +80,11 @@ scope.spawnArcs = function(spawnableSpaces) {
 
 		// Generate a new colour for each arc
 		if (Math.floor(Math.random() * 2)) {
-			var colour = {r:153, g:194, b:153};  // #99C299
+			var colour = scope.hexToRgb(scope.redSpec[0]);
 		} else {
-			var colour = {r:77, g:148, b:77};  // #4d944d
+			var colour = scope.hexToRgb(scope.blueSpec[0]);
 		};
-		// var colour = {r:77, g:148, b:77};  // #4d944d
+		// var colour = scope.hexToRgb(scope.redSpec[0]);
 
 		scope.arcs[0][sPos[i]] = (new Kinetic.Shape({
 			x: scope.stageCenter.x,

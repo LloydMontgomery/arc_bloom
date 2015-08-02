@@ -18,7 +18,10 @@ scope.stage = new Kinetic.Stage({
 	height: sHeight
 });
 
-scope.greenSpec = ['#99C299', '#4D944D', '#006600', '#004700', '#002900']
+//scope.greenSpec = ['#99C299', '#4D944D', '#006600', '#004700', '#002900']
+scope.redSpec    = ['#fb6671', '#f80012', '#95000b']
+scope.blueSpec   = ['#8b71cf', '#3e13af', '#250b69']
+scope.purpleSpec = ['#a766a7', '#6c006c', '#410041']
 scope.transition = Kinetic.Easings.StrongEaseOut
 
 
