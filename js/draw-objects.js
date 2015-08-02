@@ -95,39 +95,13 @@ scope.spawnArcs = function(spawnableSpaces) {
 			},
 		}));
 		scope.playLayer.add(scope.arcs[0][sPos[i]]);
+		scope.stage.draw();
 	};
 };
+
 var spawnableSpaces = [];
 var arraySize = scope.nSegs; while(arraySize--) spawnableSpaces.push(1);
 scope.spawnArcs(spawnableSpaces);
-
-
-// scope.arcs[1][0] = (new Kinetic.Shape({
-// 	x: scope.stageCenter.x,
-// 	y: scope.stageCenter.y,
-// 	scaleX: 1.429,
-// 	scaleY: 1.429,
-// 	rotation: 0,
-// 	strokeRed: 77,
-// 	strokeGreen: 148,
-// 	strokeBlue: 77,	
-// 	// strokeRed: 153,
-// 	// strokeGreen: 194,
-// 	// strokeBlue: 153,
-// 	strokeWidth: scope.arcWidth/1.429,
-// 	lineCap: 'round',
-// 	sceneFunc: function(context) {
-// 		var radius = 70;
-// 		var startAngle = (10+(60*0))*(Math.PI/180);
-// 		var endAngle =  (50+(60*0))*(Math.PI/180);
-// 		context.beginPath();
-// 		context.arc(0, 0, radius, startAngle, endAngle, false);
-// 		context.fillStrokeShape(this);
-// 	},
-// }));
-// scope.playLayer.add(scope.arcs[1][0]);
-
-// console.log(scope.arcs);
 
 scope.stage.add(scope.playLayer);
 

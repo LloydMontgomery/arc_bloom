@@ -54,7 +54,10 @@ function rotateArcs(direction) {
 				node: scope.arcs[scope.curRing][seg],
 				duration: .5,
 				rotation: newRotation,
-				easing: transition
+				easing: transition,
+				onFinish: function() {
+					this.destroy();
+				}
 			}).play());
 		};
 	};
@@ -77,60 +80,71 @@ function rotateArcs(direction) {
 
 function arcBloom() {
 
+	// Check how many max darkness arcs are on the outsite edge
+	var count = 0;
+	for (var seg = 0; seg < scope.nSegs; seg++) {
+		if (scope.arcs[scope.nRings-1][seg] == null)
+			break;  // If we found anything else, just leave
+		if (scope.arcs[scope.nRings-1][seg].strokeRed() == 0 &&
+			scope.arcs[scope.nRings-1][seg].strokeGreen() == 41 &&
+			scope.arcs[scope.nRings-1][seg].strokeBlue() == 0)
+			count++;
+		else
+			break;  // If we found anything else, just leave
+	};
+	// If the entire outside ring is complete, we need to bloom them into the void
+	if (count == scope.nSegs) {
+		console.log("Winning!")
+
+		// Bloom!
+		for (var seg = 0; seg < scope.nSegs; seg++) {
+			new Kinetic.Tween({
+				node: scope.arcs[scope.nRings-1][seg],
+				duration: 2,
+				scaleX: 4,
+				scaleY: 4,
+				opacity: 0,
+				easing: transition,
+				onFinish: function() {
+					this.node.destroy();  // Destroy the arc on the layer
+					this.destroy();  // Destroy the tween
+				}
+			}).play();
+
+			// Update arc memory to reflect the missing outer ring
+			scope.arcs[scope.nRings-1][seg] = null;
+		};
+	};
+
+	// Store all of the bloom info before we execute the tweens
+	var arcBloomInfo = [];
+
+	// Create the tweens to move the arcs
+	for (let seg = 0; seg < scope.nSegs; seg++) {
+		// Grab info about one segment at a time
+		arcBloomInfo.push(buildArcBloomSegInfo(seg));
+	};
+
 	// Create the tweens to move the arcs
 	for (let seg = 0; seg < scope.nSegs; seg++) {
 
-		/** Check all rings in a segment for bloom-movement decision & build information **/
-		var arcBloomSegInfo = buildArcBloomSegInfo(seg);
-
-		// Check how many max darkness arcs are on the outsite edge
-		var count = 0;
-		console.log(arcBloomSegInfo);
-		for (var ring = 0; ring < scope.nRings; ring++) {
-			for (var seg = 0; seg < scope.nSegs; seg++) {
-				if (arcBloomSegInfo[ring][seg] == null)
-					break;  // If we found anything else, just leave
-				if (arcBloomSegInfo[ring][seg]['colour'] == "#002900")
-					count++;
-				else
-					break;  // If we found anything else, just leave
-			};
-		};
-		// If the entire outside ring is complete, we need to increase the scale to move them all
-		if (count == scope.nSegs) {
-			console.log("Winning!")
-			for (var ring = 0; ring < scope.nRings-1; ring++) {  // All but the last ring
-				for (var seg = 0; seg < scope.nSegs; seg++) {
-					if (arcBloomSegInfo[ring][seg] != null)
-						arcBloomSegInfo[ring][seg]['moveTo']++;
-				};
-			};
-
-			for (let ring = 0; ring < scope.nRings; ring++) {
-				arcBloomSegInfo[nodePos]['opacity'] = 1;
-				arcBloomSegInfo[nodePos1]['duration'] = .5;
-				arcBloomSegInfo[nodePos]['moveTo'] = ring;
-				arcBloomSegInfo[nodePos]['colour'] = segArcColours[ring2]['colour'];
-			};
-		};
-
 		// Now that we have the bloom information, execute it as tweens
-		for (let ring = arcBloomSegInfo.length-1; ring >= 0 ; ring--) {
-			if (arcBloomSegInfo[ring]['node'] == null)
+		for (let ring = arcBloomInfo[seg].length-1; ring >= 0 ; ring--) {
+			if (arcBloomInfo[seg][ring]['node'] == null)
 				continue
 
-			var scale = scope.scale(arcBloomSegInfo[ring]['moveTo']);
-			var opacity = arcBloomSegInfo[ring]['opacity'];
-			var newRgb = scope.hexToRgb(arcBloomSegInfo[ring]['colour']);
+			var scale = scope.scale(arcBloomInfo[seg][ring]['moveTo']);
+			var opacity = arcBloomInfo[seg][ring]['opacity'];
+			var newRgb = scope.hexToRgb(arcBloomInfo[seg][ring]['colour']);
 
+			// Update arc memory if the arc moves rings
 			var newRing = ring;
 			if (scope.arcs[ring][seg].scaleX() != scale) {
-				newRing = arcBloomSegInfo[ring]['moveTo']
+				newRing = arcBloomInfo[seg][ring]['moveTo']
 				scope.arcs[newRing][seg] = scope.arcs[ring][seg];
 				scope.arcs[ring][seg] = null;
 			};
-
-			// Update arc memory if the arc moves rings
+			
 			scope.runningTweens.push(new Kinetic.Tween({
 				node: scope.arcs[newRing][seg],
 				duration: .5,
@@ -141,36 +155,15 @@ function arcBloom() {
 				strokeBlue: newRgb.b,
 				opacity: opacity,
 				strokeWidth: scope.arcWidth/scale,
-				easing: transition
+				easing: transition,
+				onFinish: function() {
+					if (this.node.opacity() == 0)
+						this.node.destroy();  // Destroy the arc on the layer
+					this.destroy();  // Destroy the tween
+				}
 			}).play());
 		};
 	};
-
-	// Check for a complete outer ring of dark colours
-	// var count = 0;
-	// for (var seg = 0; seg < scope.nSegs; seg++) {
-	// 	if (scope.arcs[scope.nRings-1][seg] == null)  // If there is nothing here
-	// 		break;  // Exit immediately, there is not a complete ring
-	// 	if (scope.arcs[scope.nRings-1][seg].strokeRed() == 0 && 
-	// 		scope.arcs[scope.nRings-1][seg].strokeGreen() == 41 &&
-	// 		scope.arcs[scope.nRings-1][seg].strokeBlue() == 0) {
-	// 		count++;
-	// 	};
-	// };
-	// if (count == 6) {
-	// 	console.log("Winning!")
-	// 	for (let seg = 0; ring < scope.nSegs; seg++) {
-	// 		new Kinetic.Tween({
-	// 			node: scope.arcs[scope.nRings-1][seg],
-	// 			duration: 2,
-	// 			scaleX: 4,
-	// 			scaleY: 4,
-	// 			opacity: 0,
-	// 			easing: transition
-	// 		}).play();
-	// 		scope.arcs[scope.nRings-1][seg] = null;
-	// 	};
-	// };
 
 	// Check how many arcs it is possible to spawn in
 	var spawnableSpaces = new Array(scope.nSegs);
@@ -189,7 +182,7 @@ function arcBloom() {
 };
 
 function showArcMemory() {
-	console.log(scope.arcs);
+	// console.log(scope.playLayer.children);
 }
 
 
@@ -198,6 +191,7 @@ function buildArcBloomSegInfo(seg) {
 	// Inilialize the arcBloomSegInfo to be empty objects
 	var arcBloomSegInfo = [];
 	var arraySize = scope.nRings; while(arraySize--) arcBloomSegInfo.push({});
+
 
 	// First pass over segment is out-to-in to check for arcs that need to merge
 	var segArcColours = [];
@@ -307,12 +301,13 @@ function buildArcBloomSegInfo(seg) {
 	return arcBloomSegInfo;
 };
 
+function cleanUpInvisibleArcs(tween) {
+
+}
 
 function nodePosInDictList(node, list) {
-	if (node == null) {
-		console.log("null node");
+	if (node == null)
 		return -1;
-	};
 	for (var i = 0; i < list.length; i++) {
 		if (list[i]['node'] == node)
 			return i;
