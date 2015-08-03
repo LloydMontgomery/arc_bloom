@@ -63,7 +63,7 @@ scope.spawnArcs = function(spawnableSpaces) {
 	var sPos = []  // Starting position array
 	for (var i = 0; i < spawnableSpaces.length; i++)
 		if (spawnableSpaces[i] == 1)
-			if (Math.random() > .6)
+			if (Math.random() > .7)
 				sPos.push(i);
 	// There should be at least one spawning every time
 	if (sPos.length == 0) {
@@ -84,7 +84,7 @@ scope.spawnArcs = function(spawnableSpaces) {
 		} else {
 			var colour = scope.hexToRgb(scope.blueSpec[0]);
 		};
-		// var colour = scope.hexToRgb(scope.redSpec[0]);
+		// var colour = scope.hexToRgb(scope.redSpec[2]);
 
 		scope.arcs[0][sPos[i]] = (new Kinetic.Shape({
 			x: scope.stageCenter.x,
@@ -95,7 +95,7 @@ scope.spawnArcs = function(spawnableSpaces) {
 			strokeRed: colour.r,
 			strokeGreen: colour.g,
 			strokeBlue: colour.b,
-			strokeWidth: scope.arcWidth,
+			strokeWidth: scope.arcWidth/1,
 			lineCap: 'round',
 			sceneFunc: function(context) {
 				var radius = 70;

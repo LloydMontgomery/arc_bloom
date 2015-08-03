@@ -1,5 +1,4 @@
 scope.newColour = function(oldColour1, oldColour2) {
-	console.log(oldColour1 + ' ' + oldColour2)
 	if (oldColour1 == oldColour2) {
 		switch (oldColour1) {
 			case scope.redSpec[0]:
