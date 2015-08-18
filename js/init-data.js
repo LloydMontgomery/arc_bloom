@@ -18,22 +18,10 @@ scope.stage = new Kinetic.Stage({
 	height: sHeight
 });
 
-//scope.greenSpec = ['#99C299', '#4D944D', '#006600', '#004700', '#002900']
+// scope.colourSpec = ['#f80012', '#3e13af', '#6c006c']; // Original colours, blue and purple are too close together
+scope.colourSpec = ['#ff0000', '#0029a3', '#7a00a3']; // more vibrant option
 
-// Pastels
-scope.redSpec    = ['#fb6671', '#f80012', '#95000b']
-scope.blueSpec   = ['#8b71cf', '#3e13af', '#250b69']
-scope.purpleSpec = ['#a766a7', '#6c006c', '#410041']
-
-// Pastels close together in shades
-// scope.redSpec    = ['#fb6671', '#f80012', '#95000b']
-// scope.blueSpec   = ['#8b71cf', '#3e13af', '#250b69']
-// scope.purpleSpec = ['#a766a7', '#6c006c', '#410041']
-
-// Original
-// scope.redSpec    = ['#b4333d', '#a1000c', '#81000a']
-// scope.blueSpec   = ['#50388e', '#240672', '#1d055b']
-// scope.purpleSpec = ['#893389', '#6c006c', '#560056']
+scope.initOp = 0.5;
 
 scope.transition = Kinetic.Easings.StrongEaseOut
 

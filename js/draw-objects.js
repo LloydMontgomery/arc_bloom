@@ -80,11 +80,10 @@ scope.spawnArcs = function(spawnableSpaces) {
 
 		// Generate a new colour for each arc
 		if (Math.floor(Math.random() * 2)) {
-			var colour = scope.hexToRgb(scope.redSpec[0]);
+			var colour = scope.hexToRgb(scope.colourSpec[0]);
 		} else {
-			var colour = scope.hexToRgb(scope.blueSpec[0]);
+			var colour = scope.hexToRgb(scope.colourSpec[1]);
 		};
-		// var colour = scope.hexToRgb(scope.redSpec[2]);
 
 		scope.arcs[0][sPos[i]] = (new Kinetic.Shape({
 			x: scope.stageCenter.x,
@@ -95,6 +94,7 @@ scope.spawnArcs = function(spawnableSpaces) {
 			strokeRed: colour.r,
 			strokeGreen: colour.g,
 			strokeBlue: colour.b,
+			opacity: scope.initOp,
 			strokeWidth: scope.arcWidth/1,
 			lineCap: 'round',
 			sceneFunc: function(context) {

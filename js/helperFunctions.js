@@ -1,35 +1,35 @@
-scope.newColour = function(oldColour1, oldColour2) {
-	if (oldColour1 == oldColour2) {
-		switch (oldColour1) {
-			case scope.redSpec[0]:
-				return scope.redSpec[1];
-				break;
-			case scope.redSpec[1]:
-				return scope.redSpec[2];
-				break;
-			case scope.blueSpec[0]:
-				return scope.blueSpec[1];
-				break;
-			case scope.blueSpec[1]:
-				return scope.blueSpec[2];
-				break;
-			case scope.purpleSpec[0]:
-				return scope.purpleSpec[1];
-				break;
-			case scope.purpleSpec[1]:
-				return scope.purpleSpec[2];
-				break;
-			default:
-				return null;
+scope.newColour = function(oldColour1, oldOpacity1, oldColour2, oldOpacity2) {
+
+	// Check to see if the colours and opacities of the arcs are the same
+	if (oldColour1 == oldColour2 && oldOpacity1 == oldOpacity2){ 
+
+		// Update opacity by 0.2
+		oldOpacity1 += 0.25;
+
+		// Check first if new opacity is > 1 (max)
+		if (oldOpacity1 > 1) {
+			return null;
 		};
-	} else if ((oldColour1 == scope.redSpec[2] && oldColour2 == scope.blueSpec[2]) || 
-			   (oldColour1 == scope.blueSpec[2] && oldColour2 == scope.redSpec[2])) {
-		return scope.purpleSpec[0];
-	} else {
+
+		newColour = { colour:  oldColour1, 
+					  opacity: oldOpacity1 };   
+		return newColour;
+
+	} 
+	// Check if arcs can combine into final colour (darkest red + darkest blue combines to purple)
+	else if (oldColour1 != scope.colourSpec[2] && oldColour2 != scope.colourSpec[2] && oldOpacity1 == 1 && oldOpacity2 == 1) {
+		newColour = { colour:  scope.colourSpec[2], 
+					  opacity: scope.initOp };   
+		return newColour;
+
+	} 
+	// Catchall - if arcs are the same colour and different opacities, do not combine
+	else {  
 		return null;
-	}
+	};
 };
 
+// Returns the scale applied to an arc when it moves rings 
 scope.scale = function(ring) {
 	switch(ring) {
 		case 0:
@@ -57,9 +57,3 @@ scope.hexToRgb = function(hex) {
 scope.rgbToHex = function(r, g, b) {
     return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 }
-
-// scope.nextColour = function(ring) {
-// 	switch(ring) {
-
-// 	}
-// }

@@ -62,6 +62,7 @@ function rotateArcs(direction) {
 		};
 	};
 
+
 	// Update arc memory
 	if (direction == 'clockwise') {
 		var save = scope.arcs[scope.curRing][scope.nSegs-1]  // Save the last arc
@@ -99,22 +100,18 @@ function arcBloom() {
 
 		for (let seg = 1; seg < scope.nSegs; seg++) {
 			if (scope.arcs[ring][seg] == null) {
-				console.log("NULL");
 				break;  // We are missing a piece in our ring
 			}
 
 			var arc = scope.arcs[ring][seg];  // Grab the arc object
 			if (scope.rgbToHex(arc.strokeRed(), arc.strokeGreen(), arc.strokeBlue()) != colour) {
-				console.log("WRONG COLOUR");
 				break;  // We found a different colour
 			}
 			count++;
 		};
 
-		console.log("Ring: " + ring + " Count: " + count);
-
 		if (count == scope.nSegs) {  // If this ring is complete
-			console.log("Winning!")
+			// console.log("Winning!")
 
 			// Bloom!
 			for (var seg = 0; seg < scope.nSegs; seg++) {
@@ -156,7 +153,6 @@ function arcBloom() {
 
 			var scale = scope.scale(arcBloomInfo[seg][ring]['moveTo']);
 			var opacity = arcBloomInfo[seg][ring]['opacity'];
-			//console.log (arcBloomInfo);
 			var newRgb = scope.hexToRgb(arcBloomInfo[seg][ring]['colour']);
 
 			// Update arc memory if the arc moves rings
@@ -204,26 +200,30 @@ function arcBloom() {
 };
 
 function showArcMemory() {
-	console.log(scope.arcs);
+	// var op = 0.9;
+	// var newColour = ((op += 0.2) > 1 ? 1 : op);
+	// console.log(newColour);
 }
-
 
 function buildArcBloomSegInfo(seg) {
 
-	// Inilialize the arcBloomSegInfo to be empty objects
+	// Initialize the arcBloomSegInfo to be empty objects
 	var arcBloomSegInfo = [];
 	var arraySize = scope.nRings; while(arraySize--) arcBloomSegInfo.push({});
 
 
-	// First pass over segment is out-to-in to check for arcs that need to merge
+	// First pass over segment is to record arc colours and opacity
 	var segArcColours = [];
 	for (var ring = 0; ring < scope.nRings; ring++) {
-		segArcColours.push({ colour:'', node:scope.arcs[ring][seg]});
+		segArcColours.push({ colour:'', opacity: 0, node:scope.arcs[ring][seg]});
 
 		if (scope.arcs[ring][seg] != null) {
 			segArcColours[ring]['colour'] = scope.rgbToHex(scope.arcs[ring][seg].attrs.strokeRed,
 												 scope.arcs[ring][seg].attrs.strokeGreen,
 												 scope.arcs[ring][seg].attrs.strokeBlue);
+
+			segArcColours[ring]['opacity'] = scope.arcs[ring][seg].attrs.opacity; // All arcs start at initial opacity
+			 
 		};
 	};
 
@@ -237,7 +237,8 @@ function buildArcBloomSegInfo(seg) {
 
 				if (segArcColours[ring2]['node'] != null) {  // Then we have found another arc, stop here
 
-					var newColour = scope.newColour(segArcColours[ring]['colour'], segArcColours[ring2]['colour']);
+					var newColour = scope.newColour(segArcColours[ring]['colour'], segArcColours[ring]['opacity'], 
+													segArcColours[ring2]['colour'], segArcColours[ring2]['opacity']);
 
 					if (newColour != null) {  // Then we have found something to combine
 
@@ -248,10 +249,10 @@ function buildArcBloomSegInfo(seg) {
 						// Make this arc move and change colour
 						if(!arcBloomSegInfo[nodePos1].hasOwnProperty('node'))
 							arcBloomSegInfo[nodePos1]['node'] = scope.arcs[ring2][seg];
-						arcBloomSegInfo[nodePos1]['opacity'] = 1;
+						arcBloomSegInfo[nodePos1]['opacity'] = newColour.opacity; // opacity attribute returned from newColour function
 						arcBloomSegInfo[nodePos1]['duration'] = .5;
 						arcBloomSegInfo[nodePos1]['moveTo'] = ring;
-						arcBloomSegInfo[nodePos1]['colour'] = newColour;
+						arcBloomSegInfo[nodePos1]['colour'] = newColour.colour; // colour attribute returned from newColour function
 
 						var nodePos2 = nodePosInDictList(segArcColours[ring]['node'], arcBloomSegInfo);
 						if (nodePos2 == -1)  // If it's not already in the list . . .
@@ -266,7 +267,7 @@ function buildArcBloomSegInfo(seg) {
 						arcBloomSegInfo[nodePos2]['colour'] = segArcColours[ring]['colour'];
 
 						// Reflect these changes in our temp segment
-						segArcColours[ring] = { colour:newColour, node:scope.arcs[ring][seg]};
+						segArcColours[ring] = { colour:newColour.colour, node:scope.arcs[ring][seg]};
 						segArcColours[ring2] = { colour:'', node:null};
 
 						break;  // Stop looking for arcs, we only needed one
@@ -282,7 +283,7 @@ function buildArcBloomSegInfo(seg) {
 							// Move the arc
 							if(!arcBloomSegInfo[nodePos].hasOwnProperty('node'))
 								arcBloomSegInfo[nodePos]['node'] = scope.arcs[ring2][seg];
-							arcBloomSegInfo[nodePos]['opacity'] = 1;
+							arcBloomSegInfo[nodePos]['opacity'] = segArcColours[ring2]['opacity'];
 							arcBloomSegInfo[nodePos]['duration'] = .5;
 							arcBloomSegInfo[nodePos]['moveTo'] = (ring-1);
 							arcBloomSegInfo[nodePos]['colour'] = segArcColours[ring2]['colour'];
@@ -306,7 +307,7 @@ function buildArcBloomSegInfo(seg) {
 					// Move the arc
 					if(!arcBloomSegInfo[nodePos].hasOwnProperty('node'))  // We only need to set this once
 						arcBloomSegInfo[nodePos]['node'] = scope.arcs[ring2][seg];
-					arcBloomSegInfo[nodePos]['opacity'] = 1;
+					arcBloomSegInfo[nodePos]['opacity'] = segArcColours[ring2]['opacity'];
 					arcBloomSegInfo[nodePos]['duration'] = .5;
 					arcBloomSegInfo[nodePos]['moveTo'] = ring;
 					arcBloomSegInfo[nodePos]['colour'] = segArcColours[ring2]['colour'];
@@ -326,8 +327,7 @@ function buildArcBloomSegInfo(seg) {
 };
 
 function cleanUpInvisibleArcs(tween) {
-
-}
+};
 
 function nodePosInDictList(node, list) {
 	if (node == null)
@@ -376,12 +376,6 @@ function changeSelectedRing(direction) {
 		}).play());
 	};
 };
-
-
-
-scope.showArcMemory = function() {
-	// console.log()
-}
 
 
 
