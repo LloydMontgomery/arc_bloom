@@ -87,39 +87,53 @@ function arcBloom() {
 	scope.nSpinsLeft = 3
 	scope.counter.text(scope.nSpinsLeft)
 
-	// Check how many max darkness arcs are on the outsite edge
-	var count = 0;
-	for (var seg = 0; seg < scope.nSegs; seg++) {
-		if (scope.arcs[scope.nRings-1][seg] == null)
-			break;  // If we found anything else, just leave
-		if (scope.arcs[scope.nRings-1][seg].strokeRed() == 0 &&
-			scope.arcs[scope.nRings-1][seg].strokeGreen() == 41 &&
-			scope.arcs[scope.nRings-1][seg].strokeBlue() == 0)
+	// Loop through all of the rings looking for a complete ring of any colour
+	for (let ring = 0; ring < scope.nRings; ring++) {
+		if (scope.arcs[ring][0] == null)
+			continue;  // The first segment of this ring is missing, continue
+
+		var count = 1;  // Keep track of how many we find
+		var colour = scope.rgbToHex(scope.arcs[ring][0].strokeRed(),
+									scope.arcs[ring][0].strokeGreen(),
+									scope.arcs[ring][0].strokeBlue()); // Set the first colour
+
+		for (let seg = 1; seg < scope.nSegs; seg++) {
+			if (scope.arcs[ring][seg] == null) {
+				console.log("NULL");
+				break;  // We are missing a piece in our ring
+			}
+
+			var arc = scope.arcs[ring][seg];  // Grab the arc object
+			if (scope.rgbToHex(arc.strokeRed(), arc.strokeGreen(), arc.strokeBlue()) != colour) {
+				console.log("WRONG COLOUR");
+				break;  // We found a different colour
+			}
 			count++;
-		else
-			break;  // If we found anything else, just leave
-	};
-	// If the entire outside ring is complete, we need to bloom them into the void
-	if (count == scope.nSegs) {
-		console.log("Winning!")
+		};
 
-		// Bloom!
-		for (var seg = 0; seg < scope.nSegs; seg++) {
-			new Kinetic.Tween({
-				node: scope.arcs[scope.nRings-1][seg],
-				duration: 2,
-				scaleX: 4,
-				scaleY: 4,
-				opacity: 0,
-				easing: scope.transition,
-				onFinish: function() {
-					this.node.destroy();  // Destroy the arc on the layer
-					this.destroy();  // Destroy the tween
-				}
-			}).play();
+		console.log("Ring: " + ring + " Count: " + count);
 
-			// Update arc memory to reflect the missing outer ring
-			scope.arcs[scope.nRings-1][seg] = null;
+		if (count == scope.nSegs) {  // If this ring is complete
+			console.log("Winning!")
+
+			// Bloom!
+			for (var seg = 0; seg < scope.nSegs; seg++) {
+				new Kinetic.Tween({
+					node: scope.arcs[ring][seg],
+					duration: 2,
+					scaleX: 4,
+					scaleY: 4,
+					opacity: 0,
+					easing: scope.transition,
+					onFinish: function() {
+						this.node.destroy();  // Destroy the arc on the layer
+						this.destroy();  // Destroy the tween
+					}
+				}).play();
+
+				// Update arc memory to reflect the missing outer ring
+				scope.arcs[ring][seg] = null;
+			};
 		};
 	};
 
@@ -142,6 +156,7 @@ function arcBloom() {
 
 			var scale = scope.scale(arcBloomInfo[seg][ring]['moveTo']);
 			var opacity = arcBloomInfo[seg][ring]['opacity'];
+			//console.log (arcBloomInfo);
 			var newRgb = scope.hexToRgb(arcBloomInfo[seg][ring]['colour']);
 
 			// Update arc memory if the arc moves rings
@@ -189,7 +204,7 @@ function arcBloom() {
 };
 
 function showArcMemory() {
-	// console.log(scope.playLayer.children);
+	console.log(scope.arcs);
 }
 
 
@@ -222,7 +237,9 @@ function buildArcBloomSegInfo(seg) {
 
 				if (segArcColours[ring2]['node'] != null) {  // Then we have found another arc, stop here
 
-					if (segArcColours[ring]['colour'] == segArcColours[ring2]['colour']) {  // If it is the same colour
+					var newColour = scope.newColour(segArcColours[ring]['colour'], segArcColours[ring2]['colour']);
+
+					if (newColour != null) {  // Then we have found something to combine
 
 						var nodePos1 = nodePosInDictList(segArcColours[ring2]['node'], arcBloomSegInfo);
 						if (nodePos1 == -1)  // If it's not already in the list . . .
@@ -234,7 +251,7 @@ function buildArcBloomSegInfo(seg) {
 						arcBloomSegInfo[nodePos1]['opacity'] = 1;
 						arcBloomSegInfo[nodePos1]['duration'] = .5;
 						arcBloomSegInfo[nodePos1]['moveTo'] = ring;
-						arcBloomSegInfo[nodePos1]['colour'] = scope.nextColour(segArcColours[ring]['colour']);
+						arcBloomSegInfo[nodePos1]['colour'] = newColour;
 
 						var nodePos2 = nodePosInDictList(segArcColours[ring]['node'], arcBloomSegInfo);
 						if (nodePos2 == -1)  // If it's not already in the list . . .
@@ -249,7 +266,7 @@ function buildArcBloomSegInfo(seg) {
 						arcBloomSegInfo[nodePos2]['colour'] = segArcColours[ring]['colour'];
 
 						// Reflect these changes in our temp segment
-						segArcColours[ring] = { colour:scope.nextColour(segArcColours[ring]['colour']), node:scope.arcs[ring][seg]};
+						segArcColours[ring] = { colour:newColour, node:scope.arcs[ring][seg]};
 						segArcColours[ring2] = { colour:'', node:null};
 
 						break;  // Stop looking for arcs, we only needed one
@@ -362,7 +379,9 @@ function changeSelectedRing(direction) {
 
 
 
-
+scope.showArcMemory = function() {
+	// console.log()
+}
 
 
 

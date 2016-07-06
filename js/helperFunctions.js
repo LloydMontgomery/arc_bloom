@@ -1,19 +1,33 @@
-scope.nextColour = function(oldColour) {
-	switch(oldColour) {
-		case '#99c299':
-			return '#4d944d';
-		case '#4d944d':
-			return '#006600';
-		case '#006600':
-			return '#004700';
-		case '#004700':
-			return '#002900';
-		case '#002900':
-			return '#002900';
-		default:
-			console.log(oldColour);
-			return "PROBLEM"
-	};
+scope.newColour = function(oldColour1, oldColour2) {
+	if (oldColour1 == oldColour2) {
+		switch (oldColour1) {
+			case scope.redSpec[0]:
+				return scope.redSpec[1];
+				break;
+			case scope.redSpec[1]:
+				return scope.redSpec[2];
+				break;
+			case scope.blueSpec[0]:
+				return scope.blueSpec[1];
+				break;
+			case scope.blueSpec[1]:
+				return scope.blueSpec[2];
+				break;
+			case scope.purpleSpec[0]:
+				return scope.purpleSpec[1];
+				break;
+			case scope.purpleSpec[1]:
+				return scope.purpleSpec[2];
+				break;
+			default:
+				return null;
+		};
+	} else if ((oldColour1 == scope.redSpec[2] && oldColour2 == scope.blueSpec[2]) || 
+			   (oldColour1 == scope.blueSpec[2] && oldColour2 == scope.redSpec[2])) {
+		return scope.purpleSpec[0];
+	} else {
+		return null;
+	}
 };
 
 scope.scale = function(ring) {
